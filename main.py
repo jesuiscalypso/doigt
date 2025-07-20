@@ -7,13 +7,12 @@ mouse_controller = mouse.Controller()
 
 # global hotkeys
 
-run_hotkey = '<ctrl>+<alt>+c'
-stop_hotkey = '<ctrl>+<alt>+s'
-quit_hotkey = '<ctrl>+<alt>+q'
+run_clicker_hotkey = '<ctrl>+<alt>+c'
+stop_clicker_hotkey = '<ctrl>+<alt>+s'
+quit_program_hotkey = '<ctrl>+<alt>+q'
 
 click_count = 100
 seconds_delay = 0.1
-
 
 running = False
 quit_flag = False
@@ -35,15 +34,25 @@ def stop_clicking():
 
 def click():
     global running
-    while True:
+    while quit_flag is not True:
         if running is True:
             mouse_controller.click(button=mouse.Button.left, count=click_count)
             time.sleep(seconds_delay)
+
+def stop_program():
+    global quit_flag
+    global hotkey_listener_thread
+    if quit_flag is not True:
+        quit_flag = True
+        hotkey_listener_thread.stop()
+        print("Toggled quit flag")
+    
             
 
 hotkey_listener_thread = keyboard.GlobalHotKeys({
-    run_hotkey: start_clicking,
-    stop_hotkey: stop_clicking
+    run_clicker_hotkey: start_clicking,
+    stop_clicker_hotkey: stop_clicking,
+    quit_program_hotkey: stop_program
 })
 
 clicking_thread = Thread(target=click)
@@ -58,3 +67,5 @@ print("Running...")
 
 for t in threads:
     t.join()
+
+print("Exiting gracefully...")
