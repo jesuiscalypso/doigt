@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class KeyBindings:
+class ClickerKeyBindings:
     start: str = '<ctrl>+<alt>+c'
     stop: str = '<ctrl>+<alt>+s'
     quit: str =  '<ctrl>+<alt>+q'
