@@ -1,7 +1,12 @@
-import pprint
-import clicker_manager
+from threading import Lock
 
-manager = clicker_manager.ClickerManager()
+from notifypy import Notify
+from pynput import mouse
+import manager
 
-pprint.pprint(manager.keybinds)
-pprint.pprint(manager.operation_flags)
+mutex = Lock()
+mouse_controller = mouse.Controller()
+
+notification = Notify()
+
+manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,notification_manager=notification)
