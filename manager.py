@@ -1,3 +1,4 @@
+import pprint
 from threading import Thread
 import pynput
 from pynput import mouse
@@ -14,19 +15,16 @@ from notifypy import Notify
 from _thread import LockType
 
 class ClickerManager():
+    
+    notification: Notify
+    mouse_controller: pynput.mouse.Controller
+    mutex: LockType
 
     keybinds: keybindings.ClickerKeyBindings = keybindings.ClickerKeyBindings()
     operation_flags: flags.ClickerFlags = flags.ClickerFlags()
     configuration: ClickerConfig =  config.ClickerConfig()
 
-    notification: Notify
-    mouse_controller: pynput.mouse.Controller
-
-    mutex: LockType
-
     hotkey_thread: pynput.keyboard.GlobalHotKeys
-
-    stop_flag: bool = False
 
     def __init__(self, notification_manager: Notify, mouse_controller: pynput.mouse.Controller, mutex: LockType):
         self.notification = notification_manager
@@ -40,24 +38,32 @@ class ClickerManager():
         })
 
         self.hotkey_thread = hotkey_listener_thread
+
+        pprint.pprint(self.configuration)
         
 
     def _click(self):
-        while self.stop_flag is False:
+        while self.operation_flags.should_stop is False:
             if self.operation_flags.is_clicking is True:
-                self.mouse_controller.click(button=mouse.Button.left, count=self.configuration.click_count)
-                time.sleep(self.configuration.seconds_delay)
+                self.mouse_controller.click(button=mouse.Button.left, count=1)
+                time.sleep(self.configuration.sleep_interval / 1000 ) # Sleep interval is in millis, so we must convert
         print("Joining the clicking thread")
 
 
     def run(self):
+
+        self.operation_flags.should_stop = False
+
+        if self.operation_flags.has_started_once is False:
+            self.operation_flags.has_started_once = True
+            self.hotkey_thread.start()
 
         clicking_thread = Thread(target=self._click)
         clicking_thread.start()
 
         print("Running!")
 
-        self.hotkey_thread.start()
+        
 
     def start(self):
         with self.mutex:
@@ -72,7 +78,6 @@ class ClickerManager():
         print(str(self.operation_flags))
 
     def quit(self):
-        self.stop_flag = True
-        self.hotkey_thread.stop()
+        self.operation_flags.should_stop = True
         print('Quit!')
             

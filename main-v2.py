@@ -7,6 +7,8 @@ import manager
 import tkinter as tk
 from tkinter import ttk
 
+# Initial setup
+
 mutex = Lock()
 mouse_controller = mouse.Controller()
 
@@ -16,13 +18,19 @@ manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,
 
 manager_thread = Thread(target=manager.run)
 
+# GUI setup
+
 def start_manager():
     manager_thread.start()
 
+
 root = tk.Tk()
 
+icon_path = 'assets/pointer.png'
+icon_image = tk.PhotoImage(file=icon_path)
+root.iconphoto(False, icon_image)
 root.geometry("300x100")
-root.title("Tkinter Thread Example")
+root.title("Doigt")
 
 button = ttk.Button(root, text="Start Thread", command=manager.run)
 
