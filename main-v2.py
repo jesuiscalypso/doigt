@@ -1,4 +1,4 @@
-from threading import Lock
+from threading import Lock, Thread
 
 from notifypy import Notify
 from pynput import mouse
@@ -13,6 +13,11 @@ mouse_controller = mouse.Controller()
 notification = Notify()
 
 manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,notification_manager=notification)
+
+manager_thread = Thread(target=manager.run)
+
+def start_manager():
+    manager_thread.start()
 
 root = tk.Tk()
 

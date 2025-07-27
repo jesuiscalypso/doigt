@@ -32,7 +32,7 @@ class ClickerManager():
         self.notification = notification_manager
         self.mouse_controller = mouse_controller
         self.mutex = mutex
-        
+
         hotkey_listener_thread = pynput.keyboard.GlobalHotKeys(hotkeys={
             self.keybinds.start: self.start,
             self.keybinds.stop: self.stop,
@@ -52,17 +52,12 @@ class ClickerManager():
 
     def run(self):
 
-        
-
         clicking_thread = Thread(target=self._click)
         clicking_thread.start()
 
         print("Running!")
 
         self.hotkey_thread.start()
-
-        self.hotkey_thread.join()
-        clicking_thread.join()
 
     def start(self):
         with self.mutex:
