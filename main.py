@@ -1,12 +1,16 @@
 import time
 from pynput import mouse, keyboard
 from threading import Lock, Thread
+
 from notifypy import Notify
+
+import tkinter as tk
+from tkinter import ttk
 
 mutex = Lock()
 mouse_controller = mouse.Controller()
 
-# global hotkeys
+# Global Hotkeys
 
 run_clicker_hotkey = '<ctrl>+<alt>+c'
 stop_clicker_hotkey = '<ctrl>+<alt>+s'
@@ -20,13 +24,11 @@ quit_flag = False
 
 notification = Notify()
 
-
 def start_clicking():
     global running
     if running is not True:
         with mutex:
             running = True
-            print("Started!")
             notification.message = "Began clicking!"
             _ = notification.send(block=False)
             
@@ -53,8 +55,6 @@ def stop_program():
         quit_flag = True
         hotkey_listener_thread.stop()
         print("Toggled quit flag")
-    
-            
 
 hotkey_listener_thread = keyboard.GlobalHotKeys({
     run_clicker_hotkey: start_clicking,
@@ -66,8 +66,8 @@ clicking_thread = Thread(target=click)
 
 threads = [hotkey_listener_thread, clicking_thread]
 
-hotkey_listener_thread.start()
-clicking_thread.start()
+# hotkey_listener_thread.start()
+# clicking_thread.start()
 
 notification.title = "Doight"
 notification.message = "Started program..."
@@ -75,10 +75,23 @@ _ = notification.send(block=False)
 
 print("Running...")
 
-for t in threads:
-    t.join()
+# for t in threads:
+#     t.join()
 
-print("Exiting gracefully...")
+# print("Exiting gracefully...")
+# notification.message = "Quitting..."
+# _ = notification.send(block=False)
 
-notification.message = "Quitting..."
-_ = notification.send(block=False)
+def test():
+    print("Hello, world!")
+
+root = tk.Tk()
+
+root.geometry("300x100")
+root.title("Tkinter Thread Example")
+
+button = ttk.Button(root, text="Start Thread", command=test)
+
+button.pack(pady=10)
+
+root.mainloop()
