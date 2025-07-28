@@ -29,8 +29,10 @@ root = tk.Tk()
 icon_path = 'assets/pointer.png'
 icon_image = tk.PhotoImage(file=icon_path)
 root.iconphoto(False, icon_image)
-root.geometry("300x100")
+root.geometry("300x600")
 root.title("Doigt")
+root.resizable(height=True, width=False)
+root.wm_attributes("-topmost", 1)
 
 button = ttk.Button(root, text="Start Thread", command=manager.run)
 
