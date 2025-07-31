@@ -1,14 +1,15 @@
-from threading import Lock
+from tkinter import Tk
+import tkinter as tk
 
+from threading import Lock
 from notifypy import Notify
 from pynput import mouse
 
-import tkinter as tk
 from gui.main_app import MainApplication
+from manager import ClickerManager, ClickerManagerCallbacks
+from virtual_events import AppVirtualEvents
 
-import manager
-
-def setup_root():
+def setup_root() -> Tk:
     root = tk.Tk()
 
     icon_path = 'assets/pointer.png'
@@ -22,18 +23,42 @@ def setup_root():
 
     return root
 
-def setup_main_app(): 
+def on_start_click(gui_root: Tk):
+    gui_root.event_generate(sequence=AppVirtualEvents.start_click)
+    print("Fired start event")
+
+def on_stop_click(gui_root: Tk):
+    gui_root.event_generate(sequence=AppVirtualEvents.stop_click)
+    print("Fired stop event")
+
+def setup_main_app(app_root: Tk) -> ClickerManager:
+    
     # Initial setup
+
     mutex = Lock()
     mouse_controller = mouse.Controller()
 
     notification = Notify()
 
-    clicker_manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,notification_manager=notification)
+    clicker_manager = ClickerManager(
+        mouse_controller=mouse_controller, 
+        mutex=mutex,
+        notification_manager=notification,
+        callbacks= ClickerManagerCallbacks(
+            on_start_click= lambda: on_start_click(gui_root=app_root),
+            on_stop_click= lambda: on_stop_click(gui_root=app_root)
+        ), 
+    )
     
     return clicker_manager
 
-root = setup_root()
-clicker_manager = setup_main_app()
-main_app = MainApplication(parent=root, clicker_manager=clicker_manager)
-root.mainloop()
+def start_app():
+    root = setup_root()
+    clicker_manager = setup_main_app(root)
+
+    main_app: MainApplication = MainApplication(parent=root, clicker_manager=clicker_manager)
+
+    root.mainloop()
+
+if __name__ == '__main__':
+    start_app()

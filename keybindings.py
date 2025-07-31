@@ -4,4 +4,4 @@ from dataclasses import dataclass
 class ClickerKeyBindings:
     start: str = '<ctrl>+<alt>+c'
     stop: str = '<ctrl>+<alt>+s'
-    quit: str =  '<ctrl>+<alt>+q'
+    # quit: str =  '<ctrl>+<alt>+q'

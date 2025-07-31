@@ -1,5 +1,7 @@
+from dataclasses import dataclass
 import pprint
 from threading import Thread
+from typing import Callable
 import pynput
 from pynput import mouse
 from config import ClickerConfig
@@ -14,6 +16,11 @@ from notifypy import Notify
 
 from _thread import LockType
 
+@dataclass
+class ClickerManagerCallbacks:
+    on_start_click:Callable[[], None]
+    on_stop_click:Callable[[], None]
+
 class ClickerManager():
     
     notification: Notify
@@ -26,7 +33,9 @@ class ClickerManager():
 
     hotkey_thread: pynput.keyboard.GlobalHotKeys
 
-    def __init__(self, notification_manager: Notify, mouse_controller: pynput.mouse.Controller, mutex: LockType):
+    callbacks: ClickerManagerCallbacks
+
+    def __init__(self, notification_manager: Notify, mouse_controller: pynput.mouse.Controller, mutex: LockType, callbacks: ClickerManagerCallbacks):
         self.notification = notification_manager
         self.mouse_controller = mouse_controller
         self.mutex = mutex
@@ -34,10 +43,12 @@ class ClickerManager():
         hotkey_listener_thread = pynput.keyboard.GlobalHotKeys(hotkeys={
             self.keybinds.start: self.start,
             self.keybinds.stop: self.stop,
-            self.keybinds.quit: self.quit
+            # self.keybinds.quit: self.quit
         })
 
         self.hotkey_thread = hotkey_listener_thread
+
+        self.callbacks = callbacks
 
         pprint.pprint(self.configuration)
         
@@ -68,16 +79,18 @@ class ClickerManager():
     def start(self):
         with self.mutex:
             self.operation_flags.is_clicking = True
+            self.callbacks.on_start_click()
         print('Start!')
         print(str(self.operation_flags))
 
     def stop(self):
         with self.mutex:
             self.operation_flags.is_clicking = False
+            self.callbacks.on_stop_click()
         print('Stop!')
         print(str(self.operation_flags))
 
-    def quit(self):
-        self.operation_flags.should_stop = True
-        print('Quit!')
+    #def quit(self):
+    #    self.operation_flags.should_stop = True
+    #    print('Quit!')
             
