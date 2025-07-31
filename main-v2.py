@@ -1,39 +1,37 @@
-from threading import Lock, Thread
+from threading import Lock
 
 from notifypy import Notify
 from pynput import mouse
-import manager
 
 import tkinter as tk
-from tkinter import ttk
+from gui.main_app import MainApplication
 
-# Initial setup
+import manager
 
-mutex = Lock()
-mouse_controller = mouse.Controller()
+def setup_root():
+    root = tk.Tk()
 
-notification = Notify()
+    icon_path = 'assets/pointer.png'
+    icon_image = tk.PhotoImage(file=icon_path)
+    root.iconphoto(False, icon_image)
 
-manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,notification_manager=notification)
+    root.geometry("300x100")
+    root.title("Doigt")
 
-manager_thread = Thread(target=manager.run)
+    return root
 
-# GUI setup
+def setup_main_app(): 
+    # Initial setup
+    mutex = Lock()
+    mouse_controller = mouse.Controller()
 
-def start_manager():
-    manager_thread.start()
+    notification = Notify()
 
+    clicker_manager = manager.ClickerManager(mouse_controller=mouse_controller, mutex=mutex,notification_manager=notification)
+    
+    return clicker_manager
 
-root = tk.Tk()
-
-icon_path = 'assets/pointer.png'
-icon_image = tk.PhotoImage(file=icon_path)
-root.iconphoto(False, icon_image)
-root.geometry("300x100")
-root.title("Doigt")
-
-button = ttk.Button(root, text="Start Thread", command=manager.run)
-
-button.pack(pady=10)
-
+root = setup_root()
+clicker_manager = setup_main_app()
+main_app = MainApplication(parent=root, clicker_manager=clicker_manager)
 root.mainloop()
