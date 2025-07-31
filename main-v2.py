@@ -17,6 +17,8 @@ def setup_root():
 
     root.geometry("300x100")
     root.title("Doigt")
+    
+    root.wm_attributes("-topmost", 1)
 
     return root
 
