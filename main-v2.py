@@ -52,11 +52,17 @@ def setup_main_app(app_root: Tk) -> ClickerManager:
     
     return clicker_manager
 
+def setup_global_event_bindings(root: Tk, app: MainApplication):
+    _ = root.bind(AppVirtualEvents.start_click, app.on_start_click)
+    _ = root.bind(AppVirtualEvents.stop_click, app.on_stop_click)
+
 def start_app():
     root = setup_root()
     clicker_manager = setup_main_app(root)
 
     main_app: MainApplication = MainApplication(parent=root, clicker_manager=clicker_manager)
+
+    setup_global_event_bindings(root, main_app)
 
     root.mainloop()
 

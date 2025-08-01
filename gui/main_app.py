@@ -15,10 +15,10 @@ class MainApplication(tk.Frame):
 
     status_text: tk.StringVar
 
-    def _on_start_click(self, event = None):
+    def on_start_click(self, event = None):
         self.status_text.set("Started clicking")
 
-    def _on_stop_click(self, event = None):
+    def on_stop_click(self, event = None):
         self.status_text.set("Stopped clicking")
 
     def __init__(self, parent, clicker_manager: ClickerManager, *args, **kwargs) -> None:
@@ -30,11 +30,8 @@ class MainApplication(tk.Frame):
         self._setup_app()
         self.status_text.set("Ready to roll!")
 
-        _ = self.bind(AppVirtualEvents.start_click, self._on_start_click)
-        _ = self.bind(AppVirtualEvents.stop_click, self._on_stop_click)
-
         self.clicker_manager = clicker_manager
-        self.clicker_thread = Thread(target=clicker_manager.run)
+        self.clicker_thread = Thread(target=clicker_manager.run, daemon=True)
         self.clicker_thread.start()
 
 
