@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class ClickerConfig:
     sleep_interval: float
-    clicks_per_second: int = 10
+    clicks_per_second: int = 1000
 
     def __init__(self):
         millis_per_second = 1000
