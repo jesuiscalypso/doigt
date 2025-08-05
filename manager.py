@@ -57,7 +57,7 @@ class ClickerManager():
         while self.operation_flags.should_stop is False:
             if self.operation_flags.is_clicking is True:
                 self.mouse_controller.click(button=mouse.Button.left, count=1)
-                time.sleep(self.configuration.sleep_interval / 1000 ) # Sleep interval is in millis, so we must convert
+                time.sleep(self.configuration.get_sleep_interval() / 1000 ) # Sleep interval is in millis, so we must convert
             else:
                 time.sleep(1) # We don't want to be hogging cpu time with this thread.
         print("Joining the clicking thread")
