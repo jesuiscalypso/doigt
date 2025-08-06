@@ -19,11 +19,17 @@ class MainApplication(ttk.Frame):
     status_text: tk.StringVar
     cps_text: tk.StringVar
 
+    currently_clicking: tk.BooleanVar
+    cps_spinbox: CpsSpinbox
+
     def on_start_click(self, event = None):
-        self.status_text.set("Started clicking")
+        
+        self.status_text.set(value="Started clicking")
+        self.cps_spinbox.state(statespec=['disabled'])
 
     def on_stop_click(self, event = None):
-        self.status_text.set("Stopped clicking")
+        self.status_text.set(value="Stopped clicking")
+        self.cps_spinbox.state(statespec=['!disabled'])
 
     def __init__(self, parent, clicker_manager: ClickerManager, *args, **kwargs) -> None:
         super().__init__(master=parent, *args, **kwargs)
@@ -36,6 +42,9 @@ class MainApplication(ttk.Frame):
 
         self.cps_text = tk.StringVar()
         self.cps_text.set(value=str(self.clicker_manager.configuration.clicks_per_second))
+        
+        self.currently_clicking = tk.BooleanVar()
+        self.currently_clicking.set(value=False)
 
         self.clicker_thread = Thread(target=clicker_manager.run, daemon=True)
         
@@ -56,3 +65,5 @@ class MainApplication(ttk.Frame):
 
         status_label.grid(column=0, row=0)
         cps_spinbox.grid(column=0, row=2)
+
+        self.cps_spinbox = cps_spinbox

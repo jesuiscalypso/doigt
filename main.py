@@ -1,97 +1,70 @@
-import time
-from pynput import mouse, keyboard
-from threading import Lock, Thread
-
-from notifypy import Notify
-
+from tkinter import Tk
 import tkinter as tk
-from tkinter import ttk
 
-mutex = Lock()
-mouse_controller = mouse.Controller()
+from threading import Lock
+from notifypy import Notify
+from pynput import mouse
 
-# Global Hotkeys
+from gui.main_app import MainApplication
+from manager import ClickerManager, ClickerManagerCallbacks
+from virtual_events import AppVirtualEvents
 
-run_clicker_hotkey = '<ctrl>+<alt>+c'
-stop_clicker_hotkey = '<ctrl>+<alt>+s'
-quit_program_hotkey = '<ctrl>+<alt>+q'
+def setup_root() -> Tk:
+    root = tk.Tk()
 
-click_count = 100
-seconds_delay = 0.1
+    icon_path = 'assets/pointer.png'
+    icon_image = tk.PhotoImage(file=icon_path)
+    root.iconphoto(False, icon_image)
 
-running = False
-quit_flag = False
+    root.geometry("300x100")
+    root.title("Doigt")
+    
+    root.wm_attributes("-topmost", 1)
 
-notification = Notify()
+    return root
 
-def start_clicking():
-    global running
-    if running is not True:
-        with mutex:
-            running = True
-            notification.message = "Began clicking!"
-            _ = notification.send(block=False)
-            
+def on_start_click(gui_root: Tk):
+    gui_root.event_generate(sequence=AppVirtualEvents.start_click)
+    print("Fired start event")
 
-def stop_clicking():
-    global running
-    if running is True:
-        with mutex:
-            running = False
-            notification.message = "Stopped clicking..."
-            _ = notification.send(block=False)
+def on_stop_click(gui_root: Tk):
+    gui_root.event_generate(sequence=AppVirtualEvents.stop_click)
+    print("Fired stop event")
 
-def click():
-    global running
-    while quit_flag is not True:
-        if running is True:
-            mouse_controller.click(button=mouse.Button.left, count=click_count)
-            time.sleep(seconds_delay)
+def setup_main_app(app_root: Tk) -> ClickerManager:
+    
+    # Initial setup
 
-def stop_program():
-    global quit_flag
-    global hotkey_listener_thread
-    if quit_flag is not True:
-        quit_flag = True
-        hotkey_listener_thread.stop()
-        print("Toggled quit flag")
+    mutex = Lock()
+    mouse_controller = mouse.Controller()
 
-hotkey_listener_thread = keyboard.GlobalHotKeys({
-    run_clicker_hotkey: start_clicking,
-    stop_clicker_hotkey: stop_clicking,
-    quit_program_hotkey: stop_program
-})
+    notification = Notify()
 
-clicking_thread = Thread(target=click)
+    clicker_manager = ClickerManager(
+        mouse_controller=mouse_controller, 
+        mutex=mutex,
+        notification_manager=notification,
+        callbacks= ClickerManagerCallbacks(
+            on_start_click= lambda: on_start_click(gui_root=app_root),
+            on_stop_click= lambda: on_stop_click(gui_root=app_root)
+        ), 
+    )
+    
+    return clicker_manager
 
-threads = [hotkey_listener_thread, clicking_thread]
+def setup_global_event_bindings(root: Tk, app: MainApplication):
+    _ = root.bind(AppVirtualEvents.start_click, app.on_start_click)
+    _ = root.bind(AppVirtualEvents.stop_click, app.on_stop_click)
 
-# hotkey_listener_thread.start()
-# clicking_thread.start()
+def start_app():
+    root = setup_root()
+    clicker_manager = setup_main_app(root)
 
-notification.title = "Doight"
-notification.message = "Started program..."
-_ = notification.send(block=False)
+    main_app: MainApplication = MainApplication(parent=root, clicker_manager=clicker_manager)
 
-print("Running...")
+    setup_global_event_bindings(root, main_app)
 
-# for t in threads:
-#     t.join()
+    root.mainloop()
 
-# print("Exiting gracefully...")
-# notification.message = "Quitting..."
-# _ = notification.send(block=False)
-
-def test():
-    print("Hello, world!")
-
-root = tk.Tk()
-
-root.geometry("300x100")
-root.title("Tkinter Thread Example")
-
-button = ttk.Button(root, text="Start Thread", command=test)
-
-button.pack(pady=10)
-
-root.mainloop()
+if __name__ == '__main__':
+    start_app()

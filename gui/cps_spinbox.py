@@ -3,6 +3,7 @@ import pprint
 from tkinter import ttk
 import tkinter as tk
 from config import ClickerConfig
+from flags import ClickerFlags
 
 class CpsSpinbox(ttk.Spinbox):
 
@@ -51,7 +52,6 @@ class CpsSpinbox(ttk.Spinbox):
         self.cps_indicator.set(str(self.clicker_config.clicks_per_second))
         _ = self.cps_indicator.trace_add(mode='write', callback=self._cps_spinbox_value_change)
         self['textvariable'] = self.cps_indicator
-
         self['validatecommand'] = validation_wrapper
 
 
