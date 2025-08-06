@@ -32,7 +32,12 @@ class MainApplication(ttk.Frame):
         self.cps_spinbox.state(statespec=['!disabled'])
 
     def __init__(self, parent, clicker_manager: ClickerManager, *args, **kwargs) -> None:
-        super().__init__(master=parent, *args, **kwargs)
+        
+        s = ttk.Style()
+        s.configure('Danger.TFrame', background='red', borderwidth=5, relief='raised')
+
+        super().__init__(master=parent, style='Danger.TFrame', *args, **kwargs)
+
         self.parent = parent
         
         self.status_text = tk.StringVar()
@@ -51,7 +56,7 @@ class MainApplication(ttk.Frame):
         self._setup_app()
         
         self.clicker_thread.start()
-        self.grid(column=0, row=0)
+        self.grid(column=0, row=0, sticky='nwse')
     
     def _setup_app(self) -> None:
         
