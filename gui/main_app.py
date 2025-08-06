@@ -1,6 +1,5 @@
 # Use Tkinter for python 2, tkinter for python 3
-from tkinter import StringVar
-
+from tkinter import Misc
 
 from threading import Thread
 import tkinter as tk
@@ -11,7 +10,6 @@ from manager import ClickerManager
 
 class MainApplication(ttk.Frame):
     
-
     clicker_manager: ClickerManager
     
     clicker_thread: Thread
@@ -19,7 +17,6 @@ class MainApplication(ttk.Frame):
     status_text: tk.StringVar
     cps_text: tk.StringVar
 
-    currently_clicking: tk.BooleanVar
     cps_spinbox: CpsSpinbox
 
     def on_start_click(self, event = None):
@@ -31,44 +28,44 @@ class MainApplication(ttk.Frame):
         self.status_text.set(value="Stopped clicking")
         self.cps_spinbox.state(statespec=['!disabled'])
 
-    def __init__(self, parent, clicker_manager: ClickerManager, *args, **kwargs) -> None:
-        
+    def __init__(self, parent: Misc, clicker_manager: ClickerManager, *args, **kwargs) -> None:
+
+        self._build_style()
+        super().__init__(master=parent, *args, **kwargs)
+        self.parent: Misc = parent
+
+        self.clicker_manager = clicker_manager
+        self._setup_vars()
+        self._setup_grid()
+        self._setup_widgets()
+
+        self.clicker_thread = Thread(target=clicker_manager.run, daemon=True)
+        self.clicker_thread.start()
+    
+    def _build_style(self) -> None:
         s = ttk.Style()
-        s.configure('Danger.TFrame', background='red', borderwidth=5, relief='raised')
 
-        super().__init__(master=parent, style='Danger.TFrame', *args, **kwargs)
-
-        self.parent = parent
-        
+    def _setup_vars(self)-> None:
         self.status_text = tk.StringVar()
         self.status_text.set("Ready to roll!")
 
-        self.clicker_manager = clicker_manager
-
         self.cps_text = tk.StringVar()
         self.cps_text.set(value=str(self.clicker_manager.configuration.clicks_per_second))
-        
-        self.currently_clicking = tk.BooleanVar()
-        self.currently_clicking.set(value=False)
 
-        self.clicker_thread = Thread(target=clicker_manager.run, daemon=True)
-        
-        self._setup_app()
-        
-        self.clicker_thread.start()
-        self.grid(column=0, row=0, sticky='nwse')
+    def _setup_grid(self)-> None:
+        self.grid(column=0, row=0, sticky='nswe')
+        self.columnconfigure(index=0, weight=1)
+        self.rowconfigure(index=0, weight=1)
+        self.rowconfigure(index=1, weight=1)
     
-    def _setup_app(self) -> None:
+    def _setup_widgets(self) -> None:
         
         status_label = tk.Label(master=self, justify='center')
         status_label['textvariable'] = self.status_text
-        
-        # cps_spinbox = ttk.Spinbox(master=self, from_=1, to=100, increment=1)
-        # cps_spinbox['textvariable'] = self.cps_text
 
         cps_spinbox = CpsSpinbox(parent=self, clicker_config=self.clicker_manager.configuration)
 
-        status_label.grid(column=0, row=0)
-        cps_spinbox.grid(column=0, row=2)
+        status_label.grid(column=0, row=0, sticky='nsew')
+        cps_spinbox.grid(column=0, row=1, sticky='')
 
         self.cps_spinbox = cps_spinbox
