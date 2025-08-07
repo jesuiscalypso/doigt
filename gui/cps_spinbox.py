@@ -43,7 +43,7 @@ class CpsSpinbox(ttk.Spinbox):
 
         validation_wrapper = (validation, "%P")
         
-        super().__init__(master=parent,validate='key', validatecommand=validation_wrapper)
+        super().__init__(master=parent,validate='key', validatecommand=validation_wrapper, increment=1, from_=1, to=100, wrap=True)
         self.parent = parent
 
         self.clicker_config = clicker_config

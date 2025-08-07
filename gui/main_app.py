@@ -18,14 +18,17 @@ class MainApplication(ttk.Frame):
     cps_text: tk.StringVar
 
     cps_spinbox: CpsSpinbox
+    status_label: tk.Label
 
     def on_start_click(self, event = None):
         
-        self.status_text.set(value="Started clicking")
+        self.status_text.set(value="Clicking")
+        self.status_label.config(fg="green")
         self.cps_spinbox.state(statespec=['disabled'])
 
     def on_stop_click(self, event = None):
-        self.status_text.set(value="Stopped clicking")
+        self.status_text.set(value="Not clicking")
+        self.status_label.config(fg="red")
         self.cps_spinbox.state(statespec=['!disabled'])
 
     def __init__(self, parent: Misc, clicker_manager: ClickerManager, *args, **kwargs) -> None:
@@ -47,7 +50,7 @@ class MainApplication(ttk.Frame):
 
     def _setup_vars(self)-> None:
         self.status_text = tk.StringVar()
-        self.status_text.set("Ready to roll!")
+        self.status_text.set("Not clicking.")
 
         self.cps_text = tk.StringVar()
         self.cps_text.set(value=str(self.clicker_manager.configuration.clicks_per_second))
@@ -57,15 +60,26 @@ class MainApplication(ttk.Frame):
         self.columnconfigure(index=0, weight=1)
         self.rowconfigure(index=0, weight=1)
         self.rowconfigure(index=1, weight=1)
+        self.rowconfigure(index=2, weight=1)
+        self.rowconfigure(index=3, weight=1)
+        self.rowconfigure(index=4, weight=1)
     
     def _setup_widgets(self) -> None:
         
-        status_label = tk.Label(master=self, justify='center')
+        status_label = tk.Label(master=self, justify='center', fg="red")
         status_label['textvariable'] = self.status_text
+        self.status_label = status_label
+
+        start_click_label = tk.Label(self, justify='center', fg="gray", text="CTRL + ALT + C to start clicking")
+        stop_click_label = tk.Label(self, justify='center', fg="gray", text="CTRL + ALT + S to stop")
+        cps_info_label = tk.Label(self, justify='center', fg="black", text="Clicks per second:")
 
         cps_spinbox = CpsSpinbox(parent=self, clicker_config=self.clicker_manager.configuration)
 
         status_label.grid(column=0, row=0, sticky='nsew')
-        cps_spinbox.grid(column=0, row=1, sticky='')
+        start_click_label.grid(column=0, row=1, sticky='nsew')
+        stop_click_label.grid(column=0, row=2, sticky='nsew')
+        cps_info_label.grid(column=0, row=3, sticky='nsew')
+        cps_spinbox.grid(column=0, row=4, sticky='')
 
         self.cps_spinbox = cps_spinbox

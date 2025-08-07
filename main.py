@@ -20,6 +20,8 @@ def setup_root() -> Tk:
     root.title("Doigt")
     
     root.wm_attributes("-topmost", 1)
+
+    root.resizable(False, False)
     
     _ = root.columnconfigure(index=0, weight=1)
     _ = root.rowconfigure(index=0, weight=1)
