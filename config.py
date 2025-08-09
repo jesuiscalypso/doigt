@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pprint
 from typing import Final
-from typing_extensions import override
+from typing import override
 
 
 @dataclass
