@@ -4,7 +4,7 @@ import tkinter as tk
 from notifypy import Notify
 from pynput import mouse
 
-from credit import CreditWindow
+from about import AboutWindow
 from gui.main_app import MainApplication
 from manager import ClickerManager, ClickerManagerCallbacks
 from virtual_events import AppVirtualEvents
@@ -12,15 +12,16 @@ from virtual_events import AppVirtualEvents
 
 class ApplicationMenu(tk.Menu):
 
-    parent: tk.Misc
+    parent: tk.Tk
     about_menu: tk.Menu
 
-    credit_window: CreditWindow | None = None
+    about_window: AboutWindow | None = None
     
-    def _open_credit_window(self):
-        self.credit_window = CreditWindow(self)
+    def _open_about_window(self):
+        self.about_window = AboutWindow(self.parent)
+        self.parent.withdraw()
 
-    def __init__(self, parent: tk.Misc, *args, **kwargs):
+    def __init__(self, parent: tk.Tk, *args, **kwargs):
         super().__init__(master=parent, *args, **kwargs)
 
         self.parent = parent
@@ -32,7 +33,7 @@ class ApplicationMenu(tk.Menu):
         about = tk.Menu(master=self)
 
         self.add_cascade(menu=about, label='Help')
-        about.add_command(label='About Doigt', command=self._open_credit_window)
+        about.add_command(label='About', command=self._open_about_window)
         
         self.about_menu = about
 
