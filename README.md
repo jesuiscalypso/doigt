@@ -16,7 +16,7 @@ Doigt is controlled by hotkeys and a graphical user interface (GUI).
 
 ## Running from Source
 
-First, make sure you have Python 3.11 and Tcl/Tk installed. Then, install the required libraries:
+First, make sure you have [Python 3.11](https://www.python.org/downloads/) and Tcl/Tk installed. Then, install the required libraries:
 
 ```bash
 python3 -m pip install pynput pillow typing_extensions
