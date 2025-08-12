@@ -48,7 +48,7 @@ If you want a standalone program that doesn't require Python, you can use PyInst
 
 - Libraries: Doigt uses [Tk](https://www.tcl-lang.org/) for its GUI and [pynput](https://pynput.readthedocs.io/en/latest/) for handling hotkeys and simulating clicks.
 
-- Graphics: All graphics (except for the GitHub logo) were created by [Calypso](github.com/jesuiscalypso).
+- Graphics: All graphics (except for the GitHub logo) were created by [Calypso](https://github.com/jesuiscalypso).
 
 # License
 
