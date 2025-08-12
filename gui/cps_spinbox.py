@@ -35,7 +35,7 @@ class CpsSpinbox(ttk.Spinbox):
 
         self.clicker_config.set_cps(cps=numerical_value)
 
-        print(self.cps_indicator.get())
+        # print(self.cps_indicator.get())
 
     def __init__(self, parent: tk.Widget, clicker_config: ClickerConfig):
         

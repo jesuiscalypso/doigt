@@ -1,14 +1,16 @@
+from pathlib import Path
 from threading import Lock
 import tkinter as tk
 
-from notifypy import Notify
 from pynput import mouse
 
 from about import AboutWindow
 from gui.main_app import MainApplication
+
 from manager import ClickerManager, ClickerManagerCallbacks
 from virtual_events import AppVirtualEvents
 
+from utils import resource_path
 
 class ApplicationMenu(tk.Menu):
 
@@ -18,8 +20,8 @@ class ApplicationMenu(tk.Menu):
     about_window: AboutWindow | None = None
     
     def _open_about_window(self):
-        self.about_window = AboutWindow(self.parent)
         self.parent.withdraw()
+        self.about_window = AboutWindow(self.parent)
 
     def __init__(self, parent: tk.Tk, *args, **kwargs):
         super().__init__(master=parent, *args, **kwargs)
@@ -60,7 +62,8 @@ class ApplicationRoot(tk.Tk):
 
     def _setup_window(self):
 
-        icon_path = 'assets/pointer.png'
+        
+        icon_path = resource_path(relative_path=str(Path('assets/pointer.png')))
         icon_image = tk.PhotoImage(file=icon_path)
         self.iconphoto(False, icon_image)
 
@@ -83,12 +86,10 @@ class ApplicationRoot(tk.Tk):
         mutex = Lock()
         mouse_controller = mouse.Controller()
 
-        notification = Notify()
 
         clicker_manager = ClickerManager(
             mouse_controller=mouse_controller, 
             mutex=mutex,
-            notification_manager=notification,
             callbacks= ClickerManagerCallbacks(
                 on_start_click= lambda: self._on_start_click(),
                 on_stop_click= lambda: self._on_stop_click()

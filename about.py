@@ -1,9 +1,12 @@
+from pathlib import Path
 import pprint
 import tkinter as tk
 from tkinter import PhotoImage, ttk
 import tkinter
 from PIL import ImageTk, Image
 import webbrowser
+
+from utils import resource_path
 
 
 
@@ -16,14 +19,12 @@ class AboutWindow(tk.Toplevel):
     link_frame: ttk.Frame
     github_image: ImageTk.PhotoImage
 
-    image: ImageTk.PhotoImage
+    #image: ImageTk.PhotoImage
 
     def _open_github(self):
         _ = webbrowser.open(url=self.github_link)
 
     def dismiss(self):
-        print("Closed window!")
-        self.grab_release()
         self.destroy()
         self.parent.deiconify()
 
@@ -42,10 +43,11 @@ class AboutWindow(tk.Toplevel):
         self.parent = parent
 
         self.protocol("WM_DELETE_WINDOW", self.dismiss)
-        
-        self.title("Abouts")
+        self.option_add("-topmost", 1)
+        self.title("About")
         self.resizable(False, False)
-        self.geometry('200x225')
+        self.geometry(f'250x100+{parent.winfo_x()}+{parent.winfo_y()}')
+        
 
         self._setup_grid()
         self._setup_frame() 
@@ -58,11 +60,14 @@ class AboutWindow(tk.Toplevel):
         frame.columnconfigure(index=1, weight=1)
         frame.rowconfigure(index=1, weight=1)
 
-        icon_path = 'assets/pointer.png'
+        icon_path = resource_path(relative_path=str(Path('assets/pointer.png')))
         icon_image = tk.PhotoImage(file=icon_path)
         self.iconphoto(False, icon_image)
 
-        imageobj = Image.open(fp='assets/github.png').resize(size=(25,25))
+        image_path = str(Path('assets/github.png'))
+        imageobj = Image.open(
+            fp=resource_path(relative_path=image_path)
+        ).resize(size=(25,25))
         image = ImageTk.PhotoImage(imageobj)
         self.github_image = image
 
@@ -77,20 +82,20 @@ class AboutWindow(tk.Toplevel):
         self._setup_link_frame(parent=frame)
         
         
-        imgobj = Image.open(fp='assets/scuff.png',).resize((150,150))
-        image = ImageTk.PhotoImage(image=imgobj)
+        # imgobj = Image.open(fp='assets/scuff.png',).resize((150,150))
+        # image = ImageTk.PhotoImage(image=imgobj)
         
-        self.image = image
+        # self.image = image
         self.link_frame = self._setup_link_frame(parent=frame)
 
-        image = ttk.Label(master=frame, image=image)
+        # image = ttk.Label(master=frame, image=image)
 
         about = ttk.Label(master=frame, text='Made by Calypso, with love.\nI\'m so sorry, Orteil', anchor='center', justify='center')
         
         frame.grid(column=0, row=0)
         
-        image.grid(column=0, row=0, sticky='nwse')
-        about.grid(column=0, row=1)
-        self.link_frame.grid(column=0, row=2)
+        # image.grid(column=0, row=0, sticky='nwse')
+        about.grid(column=0, row=0)
+        self.link_frame.grid(column=0, row=1)
 
         

@@ -12,7 +12,7 @@ class ClickerConfig:
 
     def _reset_sleep_interval(self):
         self._sleep_interval = self._millis_per_second / self.clicks_per_second
-        pprint.pprint(self)
+        # pprint.pprint(self)
 
     def __init__(self):
         self._millis_per_second = 1000

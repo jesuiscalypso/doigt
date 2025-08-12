@@ -12,8 +12,6 @@ import config
 import flags
 import keybindings
 
-from notifypy import Notify
-
 from _thread import LockType
 
 @dataclass
@@ -23,7 +21,6 @@ class ClickerManagerCallbacks:
 
 class ClickerManager():
     
-    notification: Notify
     mouse_controller: pynput.mouse.Controller
     mutex: LockType
 
@@ -35,8 +32,8 @@ class ClickerManager():
 
     callbacks: ClickerManagerCallbacks
 
-    def __init__(self, notification_manager: Notify, mouse_controller: pynput.mouse.Controller, mutex: LockType, callbacks: ClickerManagerCallbacks):
-        self.notification = notification_manager
+    def __init__(self,  mouse_controller: pynput.mouse.Controller, mutex: LockType, callbacks: ClickerManagerCallbacks):
+
         self.mouse_controller = mouse_controller
         self.mutex = mutex
 
@@ -50,7 +47,7 @@ class ClickerManager():
 
         self.callbacks = callbacks
 
-        pprint.pprint(self.configuration)
+        # pprint.pprint(self.configuration)
         
 
     def _click(self):
@@ -60,7 +57,7 @@ class ClickerManager():
                 time.sleep(self.configuration.get_sleep_interval() / 1000 ) # Sleep interval is in millis, so we must convert
             else:
                 time.sleep(1) # We don't want to be hogging cpu time with this thread.
-        print("Joining the clicking thread")
+        # print("Joining the clicking thread")
 
 
     def run(self):
@@ -74,7 +71,7 @@ class ClickerManager():
         clicking_thread = Thread(target=self._click)
         clicking_thread.start()
 
-        print("Running!")
+        # print("Running!")
 
         
 
@@ -82,15 +79,15 @@ class ClickerManager():
         with self.mutex:
             self.operation_flags.is_clicking = True
             self.callbacks.on_start_click()
-        print('Start!')
-        print(str(self.operation_flags))
+        # print('Start!')
+        # print(str(self.operation_flags))
 
     def stop(self):
         with self.mutex:
             self.operation_flags.is_clicking = False
             self.callbacks.on_stop_click()
-        print('Stop!')
-        print(str(self.operation_flags))
+        # print('Stop!')
+        # print(str(self.operation_flags))
 
     #def quit(self):
     #    self.operation_flags.should_stop = True
