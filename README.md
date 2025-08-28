@@ -45,7 +45,7 @@ If you want a standalone program that doesn't require Python, you can use PyInst
 ### Linux
 
 ```bash
-    pyinstaller -F --hidden-import tkinter --add-data "assets/pointer.png:assets/" --add-data "assets/github.png:assets" --onefile --windowed main.py -n doigt
+    pyinstaller -F --hidden-import tkinter --hidden-import='PIL._tkinter_finder' --add-data "assets/pointer.png:assets/" --add-data "assets/github.png:assets" --onefile --windowed main.py -n doigt
 ```
 
 # Credits
