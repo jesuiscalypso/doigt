@@ -4,7 +4,7 @@
     <img src="https://i.imgur.com/HW64MWa.gif">
 </p>
         
-Doigt (/dwɑ/, French for finger) is a simple, lightweight autoclicker for idle games like [Cookie Clicker](https://orteil.dashnet.org/cookieclicker/). It does one thing and does it well: click.
+Doigt (/dwɑ/, French for finger) is a simple, lightweight autoclicker for idle games like [Cookie Clicker](https://orteil.dashnet.org/cookieclicker/) (pictured above). It does one thing and does it well: click.
 
 # Usage
 
@@ -52,7 +52,7 @@ If you want a standalone program that doesn't require Python, you can use PyInst
 
 - Libraries: Doigt uses [Tk](https://www.tcl-lang.org/) for its GUI and [pynput](https://pynput.readthedocs.io/en/latest/) for handling hotkeys and simulating clicks.
 
-- Graphics: All graphics (except for the GitHub logo) were created by [Calypso](https://github.com/jesuiscalypso).
+- Graphics: All graphics in the project (except for the GitHub logo) were created by [Calypso](https://github.com/jesuiscalypso). Cookie Clicker and its graphics were made by [Orteil](https://orteil.dashnet.org/).
 
 # License
 
