@@ -1,5 +1,9 @@
 # Doigt: A Simple Autoclicker
 
+<p align="center">
+    <img src="https://i.imgur.com/HW64MWa.gif">
+</p>
+        
 Doigt (/dwɑ/, French for finger) is a simple, lightweight autoclicker for idle games like [Cookie Clicker](https://orteil.dashnet.org/cookieclicker/). It does one thing and does it well: click.
 
 # Usage
