@@ -14,7 +14,7 @@ Doigt is controlled by hotkeys and a graphical user interface (GUI).
 
 - **Stop clicking**: Press CTRL + ALT + S.
 
-- **Adjust rate**: The clicks-per-second (CPS) can be set from 1 to 100 using the spinbox in the GUI. You can only change this rate while the program isn't clicking. Higher rates might strain older machines.
+- **Adjust rate**: The clicks-per-second (CPS) can be set from 1 to 100 using the spinbox in the GUI. You can only change it while not clicking. Higher numbers might strain older machines.
 
 # Getting started
 
